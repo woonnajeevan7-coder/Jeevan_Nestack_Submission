@@ -101,6 +101,10 @@ To start the API server along with the background worker thread, run:
 ```bash
 uvicorn app.main:app --reload
 ```
+If `uvicorn` is not recognized globally on your system path, launch it directly via python:
+```bash
+python -m uvicorn app.main:app --reload
+```
 
 The API will be accessible at: `http://127.0.0.1:8000`
 Swagger UI Documentation: `http://127.0.0.1:8000/docs`
