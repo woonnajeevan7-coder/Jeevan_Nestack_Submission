@@ -1,6 +1,10 @@
 # Nestack Webhook Delivery Engine
 
-A production-ready, highly reliable Webhook Delivery Engine built with **FastAPI**, **SQLAlchemy**, and **SQLite**. The system performs immediate webhook attempts upon creation and uses a custom background worker thread for robust database-backed retry scheduling.
+A production-ready, highly reliable Webhook Delivery Engine built with **FastAPI**, **SQLAlchemy**, and **SQLite**. The system performs database-backed webhook delivery and retry scheduling using a custom background worker thread.
+
+### Live Links:
+- **GitHub Repository**: [Jeevan_Nestack_Submission](https://github.com/woonnajeevan7-coder/Jeevan_Nestack_Submission)
+- **Live Deployment URL**: [https://jeevan-nestack-submission.onrender.com](https://jeevan-nestack-submission.onrender.com)
 
 ---
 
@@ -9,22 +13,20 @@ A production-ready, highly reliable Webhook Delivery Engine built with **FastAPI
 The system consists of three main components:
 1. **FastAPI Web API**: Exposes endpoints to create/view events, track delivery attempts, and manually trigger retries.
 2. **SQLite Database (via SQLAlchemy)**: Persists event states, retry schedules, and historical delivery attempt logs.
-3. **Background Worker Thread**: A custom thread launched automatically on application startup that polls the database every second for overdue retry events.
+3. **Background Worker Thread**: A custom thread launched automatically on application startup that polls the database every second for due delivery and retry events.
 
 ```mermaid
 graph TD
     Client[Client Application] -->|POST /events| API[FastAPI Web API]
     API -->|1. Write event (pending)| DB[(SQLite Database)]
-    API -->|2. Trigger immediate attempt| WorkerBg[FastAPI BackgroundTasks]
-    WorkerBg -->|3. Call request POST| Target[Target Webhook URL]
     
     subgraph Custom Worker
-        Thread[Background Worker Thread] -->|4. Poll every 1s for due retries| DB
-        Thread -->|5. Call requests POST| Target
+        Thread[Background Worker Thread] -->|2. Poll every 1s for due events| DB
+        Thread -->|3. Call requests POST| Target[Target Webhook URL]
     end
 
     Target -->|Response (2xx/non-2xx/Exception)| Result[Outcome Logger]
-    Result -->|6. Log Attempt & Update Next Retry / Dead status| DB
+    Result -->|4. Log Attempt & Update Next Retry / Dead status| DB
 ```
 
 ---
